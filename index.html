@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Game</title>
+<title>Click and Play</title>
 
 <style>
 body{margin:0;background:#000;color:#fff;font-family:Arial;text-align:center;}
@@ -76,12 +76,11 @@ margin:15px 0;
 
 .roulette-track{
 display:flex;
-transition:transform 4s cubic-bezier(.17,.67,.25,1);
 }
 
 .roulette-item{
-min-width:80px;
-font-size:35px;
+min-width:90px;
+font-size:26px;
 padding:15px;
 border-right:1px solid #222;
 }
@@ -103,28 +102,11 @@ font-size:16px;
 .nav button.active{
 background:#333;
 }
-
-.message-box{
-background:#111;
-padding:20px;
-border-radius:15px;
-width:85%;
-max-width:350px;
-text-align:center;
-}
-.message-box button{
-margin-top:15px;
-padding:8px 15px;
-background:#444;
-border:none;
-border-radius:8px;
-color:#fff;
-}
 </style>
 </head>
 <body>
 
-<h1>Mini Game</h1>
+<h1>Click and Play</h1>
 <div class="balance">⭐ <span id="balance">0.00</span></div>
 
 <div id="clickScreen" class="screen active">
@@ -154,13 +136,6 @@ color:#fff;
 </div>
 </div>
 
-<div class="modal-bg" id="messageBg">
-<div class="message-box">
-<div id="messageText"></div>
-<button onclick="closeMessage()">ОК</button>
-</div>
-</div>
-
 <div class="nav">
 <button onclick="showScreen('click')" id="btnClick" class="active">Игра</button>
 <button onclick="showScreen('cases')" id="btnCases">Кейсы</button>
@@ -168,28 +143,27 @@ color:#fff;
 </div>
 
 <script>
-let balance = 0;
-let inventory = [];
-let freeCooldown = 0;
+let balance = parseFloat(localStorage.getItem("balance")) || 0;
+let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+updateBalance();
 
-/* Предметы */
+function saveGame(){
+localStorage.setItem("balance", balance);
+localStorage.setItem("inventory", JSON.stringify(inventory));
+}
+
 const items = {
-star1:{icon:"⭐",value:1,weight:50},
-star2:{icon:"⭐",value:2,weight:45},
-star3:{icon:"⭐",value:3,weight:40},
-star4:{icon:"⭐",value:4,weight:35},
-star5:{icon:"⭐",value:5,weight:30},
-star6:{icon:"⭐",value:6,weight:25},
-star7:{icon:"⭐",value:7,weight:20},
-star8:{icon:"⭐",value:8,weight:15},
-star9:{icon:"⭐",value:9,weight:10},
-star10:{icon:"⭐",value:10,weight:5},
-champagne:{icon:"🍾",value:50,weight:6},
-heart:{icon:"💝",value:15,weight:15},
-cake:{icon:"🎂",value:50,weight:6},
-trophy:{icon:"🏆",value:100,weight:3},
-gift:{icon:"🎁",value:25,weight:12},
-rose:{icon:"🌹",value:25,weight:12}
+star1:{icon:"⭐",value:1},
+star2:{icon:"⭐",value:2},
+star3:{icon:"⭐",value:3},
+star4:{icon:"⭐",value:4},
+star5:{icon:"⭐",value:5},
+champagne:{icon:"🍾",value:50},
+heart:{icon:"💝",value:15},
+cake:{icon:"🎂",value:50},
+trophy:{icon:"🏆",value:100},
+gift:{icon:"🎁",value:25},
+rose:{icon:"🌹",value:25}
 };
 
 const allItems = Object.keys(items);
@@ -203,19 +177,10 @@ case4:{name:"Кейс #4",price:75},
 case5:{name:"Кейс #5",price:100}
 };
 
-function showMessage(text){
-document.getElementById("messageText").innerText=text;
-document.getElementById("messageBg").style.display="flex";
-}
-
-function closeMessage(){
-document.getElementById("messageBg").style.display="none";
-}
-
 function tap(){
-balance += 0.05;
-balance = Math.round(balance*100)/100;
+balance += 0.1;
 updateBalance();
+saveGame();
 }
 
 function updateBalance(){
@@ -225,48 +190,23 @@ document.getElementById("balance").innerText = balance.toFixed(2);
 function showScreen(name){
 document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
 document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-
 if(name==="click"){clickScreen.classList.add("active");btnClick.classList.add("active");}
 if(name==="cases"){caseScreen.classList.add("active");btnCases.classList.add("active");}
 if(name==="inventory"){inventoryScreen.classList.add("active");btnInv.classList.add("active");renderInventory();}
 }
 
-function weightedRandom(){
-let total=0;
-allItems.forEach(i=>total+=items[i].weight);
-let rand=Math.random()*total;
-let sum=0;
-for(let i of allItems){
-sum+=items[i].weight;
-if(rand<=sum) return i;
-}
-}
-
 function openCase(key){
 let c=cases[key];
-
-if(key==="free"){
-if(Date.now()<freeCooldown){
-let sec=Math.ceil((freeCooldown-Date.now())/1000);
-showMessage("Бесплатный кейс будет доступен через "+sec+" сек.");
-return;
-}
-freeCooldown=Date.now()+600000;
-}else{
-if(balance<c.price){
-showMessage("Недостаточно звёзд!");
-return;
-}
+if(balance<c.price && key!=="free") return alert("Недостаточно звёзд!");
+if(key!=="free"){
 balance-=c.price;
 updateBalance();
+saveGame();
+}
+openModal(c.name);
 }
 
-let win = weightedRandom();
-inventory.push(win);
-openModal(c.name, win);
-}
-
-function openModal(title, win){
+function openModal(title){
 document.getElementById("modalBg").style.display="flex";
 document.getElementById("caseTitle").innerText=title;
 document.getElementById("resultText").innerText="";
@@ -277,10 +217,13 @@ track.style.transition="none";
 track.style.transform="translateX(0px)";
 
 let arr=[];
-for(let i=0;i<40;i++){
+for(let i=0;i<60;i++){
 arr.push(allItems[Math.floor(Math.random()*allItems.length)]);
 }
-arr[30]=win;
+
+let winIndex=45;
+let winItem=allItems[Math.floor(Math.random()*allItems.length)];
+arr[winIndex]=winItem;
 
 arr.forEach(i=>{
 let div=document.createElement("div");
@@ -289,15 +232,19 @@ div.innerText=items[i].icon;
 track.appendChild(div);
 });
 
+let offset=winIndex*90-150;
+
 setTimeout(()=>{
-track.style.transition="transform 4s cubic-bezier(.17,.67,.25,1)";
-track.style.transform="translateX(-2400px)";
+track.style.transition="transform 3s ease-out";
+track.style.transform="translateX(-"+offset+"px)";
 },100);
 
 setTimeout(()=>{
-document.getElementById("resultText").innerText=
-"Выпало: "+items[win].icon+" "+items[win].value+"⭐";
-},4500);
+inventory.push(winItem);
+saveGame();
+document.getElementById("resultText").innerText="Выпало: "+items[winItem].icon;
+renderInventory();
+},3100);
 }
 
 function closeModal(){
@@ -311,7 +258,7 @@ inventory.forEach((item,index)=>{
 let div=document.createElement("div");
 div.className="inventory-item";
 div.innerHTML=
-items[item].icon+" "+items[item].value+"⭐ "+
+items[item].icon+
 "<button onclick='sell("+index+")'>Продать</button>";
 list.appendChild(div);
 });
@@ -321,24 +268,26 @@ function sell(i){
 balance+=items[inventory[i]].value;
 inventory.splice(i,1);
 updateBalance();
+saveGame();
 renderInventory();
 }
 
 function renderCases(){
 let list=document.getElementById("caseList");
+list.innerHTML="";
 for(let key in cases){
 let c=cases[key];
 let div=document.createElement("div");
 div.className="case";
 div.innerHTML=
-"<b>"+c.name+"</b><br>Цена: "+c.price+"⭐<br>"+
+"<b>"+c.name+"</b><br>"+
 "<button onclick='openCase(\""+key+"\")'>Открыть</button>";
 list.appendChild(div);
 }
 }
 
 renderCases();
-updateBalance();
+renderInventory();
 </script>
 </body>
 </html>
