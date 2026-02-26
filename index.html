@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Game</title>
+
+<style>
+body{margin:0;background:#000;color:#fff;font-family:Arial;text-align:center;}
+h1{margin:15px 0;}
+.balance{font-size:20px;margin-bottom:10px;}
+.screen{display:none;padding-bottom:90px;}
+.active{display:block;}
+
+.click-wrap{margin-top:80px;display:flex;justify-content:center;}
+.click-btn{
+width:150px;height:150px;border-radius:50%;
+border:none;background:#555;
+font-size:50px;color:#fff;
+box-shadow:0 0 20px #777;
+}
+
+.cases{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:15px;
+}
+.case{background:#111;padding:15px;border-radius:12px;}
+.case button{
+margin-top:10px;padding:10px;width:100%;
+border:none;border-radius:8px;
+background:#444;color:#fff;
+}
+
+.inventory-item{
+background:#111;margin:10px;padding:10px;
+border-radius:10px;
+display:flex;justify-content:space-between;align-items:center;
+}
+.inventory-item button{
+padding:5px 10px;border:none;border-radius:6px;
+background:#444;color:#fff;
+}
+
+.modal-bg{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.8);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:10;
+}
+
+.modal{
+background:#111;
+padding:20px;
+border-radius:15px;
+width:90%;
+max-width:400px;
+}
+
+.pointer{
+font-size:25px;
+margin:10px 0;
+}
+
+.roulette{
+overflow:hidden;
+border-top:2px solid #333;
+border-bottom:2px solid #333;
+margin:15px 0;
+}
+
+.roulette-track{
+display:flex;
+transition:transform 4s cubic-bezier(.17,.67,.25,1);
+}
+
+.roulette-item{
+min-width:80px;
+font-size:35px;
+padding:15px;
+border-right:1px solid #222;
+}
+
+.nav{
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+}
+.nav button{
+flex:1;
+padding:15px;
+border:none;
+background:#111;
+color:#fff;
+font-size:16px;
+}
+.nav button.active{
+background:#333;
+}
+
+.message-box{
+background:#111;
+padding:20px;
+border-radius:15px;
+width:85%;
+max-width:350px;
+text-align:center;
+}
+.message-box button{
+margin-top:15px;
+padding:8px 15px;
+background:#444;
+border:none;
+border-radius:8px;
+color:#fff;
+}
+</style>
+</head>
+<body>
+
+<h1>Mini Game</h1>
+<div class="balance">⭐ <span id="balance">0.00</span></div>
+
+<div id="clickScreen" class="screen active">
+<div class="click-wrap">
+<button class="click-btn" onclick="tap()">⭐</button>
+</div>
+</div>
+
+<div id="caseScreen" class="screen">
+<div class="cases" id="caseList"></div>
+</div>
+
+<div id="inventoryScreen" class="screen">
+<div id="inventoryList"></div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+<div class="modal">
+<h2 id="caseTitle"></h2>
+<div class="pointer">▼</div>
+<div class="roulette">
+<div class="roulette-track" id="rouletteTrack"></div>
+</div>
+<div id="resultText"></div>
+<br>
+<button onclick="closeModal()">Закрыть</button>
+</div>
+</div>
+
+<div class="modal-bg" id="messageBg">
+<div class="message-box">
+<div id="messageText"></div>
+<button onclick="closeMessage()">ОК</button>
+</div>
+</div>
+
+<div class="nav">
+<button onclick="showScreen('click')" id="btnClick" class="active">Игра</button>
+<button onclick="showScreen('cases')" id="btnCases">Кейсы</button>
+<button onclick="showScreen('inventory')" id="btnInv">Инвентарь</button>
+</div>
+
+<script>
+let balance = 0;
+let inventory = [];
+let freeCooldown = 0;
+
+/* Предметы */
+const items = {
+star1:{icon:"⭐",value:1,weight:50},
+star2:{icon:"⭐",value:2,weight:45},
+star3:{icon:"⭐",value:3,weight:40},
+star4:{icon:"⭐",value:4,weight:35},
+star5:{icon:"⭐",value:5,weight:30},
+star6:{icon:"⭐",value:6,weight:25},
+star7:{icon:"⭐",value:7,weight:20},
+star8:{icon:"⭐",value:8,weight:15},
+star9:{icon:"⭐",value:9,weight:10},
+star10:{icon:"⭐",value:10,weight:5},
+champagne:{icon:"🍾",value:50,weight:6},
+heart:{icon:"💝",value:15,weight:15},
+cake:{icon:"🎂",value:50,weight:6},
+trophy:{icon:"🏆",value:100,weight:3},
+gift:{icon:"🎁",value:25,weight:12},
+rose:{icon:"🌹",value:25,weight:12}
+};
+
+const allItems = Object.keys(items);
+
+const cases = {
+free:{name:"Бесплатный",price:0},
+case1:{name:"Кейс #1",price:10},
+case2:{name:"Кейс #2",price:25},
+case3:{name:"Кейс #3",price:50},
+case4:{name:"Кейс #4",price:75},
+case5:{name:"Кейс #5",price:100}
+};
+
+function showMessage(text){
+document.getElementById("messageText").innerText=text;
+document.getElementById("messageBg").style.display="flex";
+}
+
+function closeMessage(){
+document.getElementById("messageBg").style.display="none";
+}
+
+function tap(){
+balance += 0.05;
+balance = Math.round(balance*100)/100;
+updateBalance();
+}
+
+function updateBalance(){
+document.getElementById("balance").innerText = balance.toFixed(2);
+}
+
+function showScreen(name){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+
+if(name==="click"){clickScreen.classList.add("active");btnClick.classList.add("active");}
+if(name==="cases"){caseScreen.classList.add("active");btnCases.classList.add("active");}
+if(name==="inventory"){inventoryScreen.classList.add("active");btnInv.classList.add("active");renderInventory();}
+}
+
+function weightedRandom(){
+let total=0;
+allItems.forEach(i=>total+=items[i].weight);
+let rand=Math.random()*total;
+let sum=0;
+for(let i of allItems){
+sum+=items[i].weight;
+if(rand<=sum) return i;
+}
+}
+
+function openCase(key){
+let c=cases[key];
+
+if(key==="free"){
+if(Date.now()<freeCooldown){
+let sec=Math.ceil((freeCooldown-Date.now())/1000);
+showMessage("Бесплатный кейс будет доступен через "+sec+" сек.");
+return;
+}
+freeCooldown=Date.now()+600000;
+}else{
+if(balance<c.price){
+showMessage("Недостаточно звёзд!");
+return;
+}
+balance-=c.price;
+updateBalance();
+}
+
+let win = weightedRandom();
+inventory.push(win);
+openModal(c.name, win);
+}
+
+function openModal(title, win){
+document.getElementById("modalBg").style.display="flex";
+document.getElementById("caseTitle").innerText=title;
+document.getElementById("resultText").innerText="";
+
+let track=document.getElementById("rouletteTrack");
+track.innerHTML="";
+track.style.transition="none";
+track.style.transform="translateX(0px)";
+
+let arr=[];
+for(let i=0;i<40;i++){
+arr.push(allItems[Math.floor(Math.random()*allItems.length)]);
+}
+arr[30]=win;
+
+arr.forEach(i=>{
+let div=document.createElement("div");
+div.className="roulette-item";
+div.innerText=items[i].icon;
+track.appendChild(div);
+});
+
+setTimeout(()=>{
+track.style.transition="transform 4s cubic-bezier(.17,.67,.25,1)";
+track.style.transform="translateX(-2400px)";
+},100);
+
+setTimeout(()=>{
+document.getElementById("resultText").innerText=
+"Выпало: "+items[win].icon+" "+items[win].value+"⭐";
+},4500);
+}
+
+function closeModal(){
+document.getElementById("modalBg").style.display="none";
+}
+
+function renderInventory(){
+let list=document.getElementById("inventoryList");
+list.innerHTML="";
+inventory.forEach((item,index)=>{
+let div=document.createElement("div");
+div.className="inventory-item";
+div.innerHTML=
+items[item].icon+" "+items[item].value+"⭐ "+
+"<button onclick='sell("+index+")'>Продать</button>";
+list.appendChild(div);
+});
+}
+
+function sell(i){
+balance+=items[inventory[i]].value;
+inventory.splice(i,1);
+updateBalance();
+renderInventory();
+}
+
+function renderCases(){
+let list=document.getElementById("caseList");
+for(let key in cases){
+let c=cases[key];
+let div=document.createElement("div");
+div.className="case";
+div.innerHTML=
+"<b>"+c.name+"</b><br>Цена: "+c.price+"⭐<br>"+
+"<button onclick='openCase(\""+key+"\")'>Открыть</button>";
+list.appendChild(div);
+}
+}
+
+renderCases();
+updateBalance();
+</script>
+</body>
+</html>
