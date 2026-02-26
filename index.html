@@ -62,10 +62,7 @@ width:90%;
 max-width:400px;
 }
 
-.pointer{
-font-size:25px;
-margin:10px 0;
-}
+.pointer{font-size:25px;margin:10px 0;}
 
 .roulette{
 overflow:hidden;
@@ -74,9 +71,7 @@ border-bottom:2px solid #333;
 margin:15px 0;
 }
 
-.roulette-track{
-display:flex;
-}
+.roulette-track{display:flex;}
 
 .roulette-item{
 min-width:90px;
@@ -99,9 +94,7 @@ background:#111;
 color:#fff;
 font-size:16px;
 }
-.nav button.active{
-background:#333;
-}
+.nav button.active{background:#333;}
 </style>
 </head>
 <body>
@@ -132,7 +125,7 @@ background:#333;
 </div>
 <div id="resultText"></div>
 <br>
-<button onclick="closeModal()">Закрыть</button>
+<button id="closeBtn" onclick="closeModal()">Закрыть</button>
 </div>
 </div>
 
@@ -143,27 +136,31 @@ background:#333;
 </div>
 
 <script>
+
+/* ===== ПЕРЕМЕННЫЕ ===== */
+
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+let lastFreeOpen = parseInt(localStorage.getItem("lastFreeOpen")) || 0;
+let spinning = false;
+
 updateBalance();
 
 function saveGame(){
 localStorage.setItem("balance", balance);
 localStorage.setItem("inventory", JSON.stringify(inventory));
+localStorage.setItem("lastFreeOpen", lastFreeOpen);
 }
 
 const items = {
-star1:{icon:"⭐",value:1},
-star2:{icon:"⭐",value:2},
-star3:{icon:"⭐",value:3},
-star4:{icon:"⭐",value:4},
-star5:{icon:"⭐",value:5},
-champagne:{icon:"🍾",value:50},
-heart:{icon:"💝",value:15},
-cake:{icon:"🎂",value:50},
-trophy:{icon:"🏆",value:100},
-gift:{icon:"🎁",value:25},
-rose:{icon:"🌹",value:25}
+star1:{icon:"⭐1",value:1,weight:50},
+star2:{icon:"⭐2",value:2,weight:45},
+star3:{icon:"⭐3",value:3,weight:40},
+star4:{icon:"⭐4",value:4,weight:35},
+star5:{icon:"⭐5",value:5,weight:30},
+champagne:{icon:"🍾",value:50,weight:6},
+heart:{icon:"💝",value:15,weight:15},
+trophy:{icon:"🏆",value:100,weight:3}
 };
 
 const allItems = Object.keys(items);
@@ -177,8 +174,11 @@ case4:{name:"Кейс #4",price:75},
 case5:{name:"Кейс #5",price:100}
 };
 
+/* ===== КЛИКЕР ===== */
+
 function tap(){
-balance += 0.1;
+balance += 0.05;
+balance = Math.round(balance*100)/100;
 updateBalance();
 saveGame();
 }
@@ -186,6 +186,8 @@ saveGame();
 function updateBalance(){
 document.getElementById("balance").innerText = balance.toFixed(2);
 }
+
+/* ===== ЭКРАНЫ ===== */
 
 function showScreen(name){
 document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
@@ -195,61 +197,90 @@ if(name==="cases"){caseScreen.classList.add("active");btnCases.classList.add("ac
 if(name==="inventory"){inventoryScreen.classList.add("active");btnInv.classList.add("active");renderInventory();}
 }
 
-function openCase(key){
-let c=cases[key];
-if(balance<c.price && key!=="free") return alert("Недостаточно звёзд!");
-if(key!=="free"){
-balance-=c.price;
-updateBalance();
-saveGame();
+/* ===== РАНДОМ ===== */
+
+function weightedRandom(){
+let total=0;
+allItems.forEach(i=>total+=items[i].weight);
+let rand=Math.random()*total;
+let sum=0;
+for(let i of allItems){
+sum+=items[i].weight;
+if(rand<=sum) return i;
 }
+}
+
+/* ===== ОТКРЫТИЕ КЕЙСА ===== */
+
+function openCase(key){
+if(spinning) return;
+
+let c=cases[key];
+
+if(key==="free"){
+let now=Date.now();
+let cooldown=600000;
+if(now-lastFreeOpen < cooldown){
+let remain=Math.ceil((cooldown-(now-lastFreeOpen))/1000);
+return alert("Бесплатный кейс через "+remain+" сек.");
+}
+lastFreeOpen=now;
+}
+
+if(balance<c.price && key!=="free") return alert("Недостаточно звёзд!");
+
+if(key!=="free"){balance-=c.price;updateBalance();}
+
+saveGame();
 openModal(c.name);
 }
 
 function openModal(title){
+spinning=true;
 document.getElementById("modalBg").style.display="flex";
 document.getElementById("caseTitle").innerText=title;
 document.getElementById("resultText").innerText="";
+document.getElementById("closeBtn").disabled=true;
 
 let track=document.getElementById("rouletteTrack");
 track.innerHTML="";
 track.style.transition="none";
 track.style.transform="translateX(0px)";
 
-let arr=[];
+let winIndex=40;
+let realWin=weightedRandom();
+
 for(let i=0;i<60;i++){
-arr.push(allItems[Math.floor(Math.random()*allItems.length)]);
-}
-
-let winIndex=45;
-let winItem=allItems[Math.floor(Math.random()*allItems.length)];
-arr[winIndex]=winItem;
-
-arr.forEach(i=>{
+let item=(i===winIndex)?realWin:allItems[Math.floor(Math.random()*allItems.length)];
 let div=document.createElement("div");
 div.className="roulette-item";
-div.innerText=items[i].icon;
+div.innerText=items[item].icon;
 track.appendChild(div);
-});
+}
 
-let offset=winIndex*90-150;
+let itemWidth=90;
+let centerOffset=(itemWidth*winIndex)-150;
 
 setTimeout(()=>{
-track.style.transition="transform 3s ease-out";
-track.style.transform="translateX(-"+offset+"px)";
+track.style.transition="transform 4s cubic-bezier(.17,.67,.25,1)";
+track.style.transform="translateX(-"+centerOffset+"px)";
 },100);
 
 setTimeout(()=>{
-inventory.push(winItem);
+inventory.push(realWin);
 saveGame();
-document.getElementById("resultText").innerText="Выпало: "+items[winItem].icon;
-renderInventory();
-},3100);
+document.getElementById("resultText").innerText="Выпало: "+items[realWin].icon;
+spinning=false;
+document.getElementById("closeBtn").disabled=false;
+},4500);
 }
 
 function closeModal(){
+if(spinning) return;
 document.getElementById("modalBg").style.display="none";
 }
+
+/* ===== ИНВЕНТАРЬ ===== */
 
 function renderInventory(){
 let list=document.getElementById("inventoryList");
@@ -272,9 +303,10 @@ saveGame();
 renderInventory();
 }
 
+/* ===== КЕЙСЫ ===== */
+
 function renderCases(){
 let list=document.getElementById("caseList");
-list.innerHTML="";
 for(let key in cases){
 let c=cases[key];
 let div=document.createElement("div");
@@ -287,7 +319,7 @@ list.appendChild(div);
 }
 
 renderCases();
-renderInventory();
+
 </script>
 </body>
 </html>
