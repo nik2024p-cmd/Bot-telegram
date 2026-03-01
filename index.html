@@ -346,44 +346,6 @@
     let freeCaseCooldown = userData.freeCaseCooldown;
     let promoUsed = userData.promoUsed;
     
-    // ГЛОБАЛЬНЫЙ ТОП (храним всех пользователей)
-    let globalTop = JSON.parse(localStorage.getItem('global_top')) || {};
-    
-    function saveUserData() {
-        userData.balance = balance;
-        userData.inventory = inventory;
-        userData.freeCaseCooldown = freeCaseCooldown;
-        userData.promoUsed = promoUsed;
-        localStorage.setItem(storageKey, JSON.stringify(userData));
-        
-        // Обновляем глобальный топ
-        let totalInventoryValue = 0;
-        inventory.forEach(item => totalInventoryValue += items[item]?.value || 0);
-        
-        globalTop[userId] = {
-            name: userName,
-            balance: balance,
-            inventoryValue: totalInventoryValue,
-            lastUpdate: Date.now()
-        };
-        
-        // Очищаем старые записи (старше 30 дней)
-        let now = Date.now();
-        Object.keys(globalTop).forEach(id => {
-            if (now - globalTop[id].lastUpdate > 30 * 24 * 60 * 60 * 1000) {
-                delete globalTop[id];
-            }
-        });
-        
-        localStorage.setItem('global_top', JSON.stringify(globalTop));
-        renderTop('balance');
-    }
-    
-    function updateBalance() {
-        document.getElementById('balance').innerText = balance.toFixed(2);
-    }
-    updateBalance();
-    
     /* ПРЕДМЕТЫ */
     const items = {
         star1: { icon: "⭐1", value: 1 },
@@ -416,9 +378,9 @@
     /* ПРОМОКОДЫ */
     const PROMOCODES = {
         ПРОМОКОД: { reward: 25, uses: 25 },
-        NFT: { reward: 25, uses: 50 },
-        ТОП: { reward: 100, uses: 10 },
-        ИПУЧИ: { reward: 90000, uses: 1}
+        START: { reward: 25, uses: 50 },
+        GOLD: { reward: 100, uses: 10 },
+        VIP: { reward: 250, uses: 5 }
     };
     
     function openPromo() {
@@ -596,13 +558,69 @@
         }
     }
     
+    // ГЛОБАЛЬНЫЙ ТОП (храним всех пользователей)
+    let globalTop = JSON.parse(localStorage.getItem('global_top')) || {};
+    
+    // Функция сохранения данных пользователя и обновления топа
+    function saveUserData() {
+        // Сохраняем данные пользователя
+        userData.balance = balance;
+        userData.inventory = inventory;
+        userData.freeCaseCooldown = freeCaseCooldown;
+        userData.promoUsed = promoUsed;
+        localStorage.setItem(storageKey, JSON.stringify(userData));
+        
+        // Обновляем глобальный топ
+        let totalInventoryValue = 0;
+        inventory.forEach(item => totalInventoryValue += items[item]?.value || 0);
+        
+        globalTop[userId] = {
+            name: userName,
+            balance: balance,
+            inventoryValue: totalInventoryValue,
+            lastUpdate: Date.now()
+        };
+        
+        // Очищаем старые записи (старше 30 дней)
+        let now = Date.now();
+        let cleanedTop = {};
+        Object.entries(globalTop).forEach(([id, data]) => {
+            if (now - data.lastUpdate <= 30 * 24 * 60 * 60 * 1000) {
+                cleanedTop[id] = data;
+            }
+        });
+        globalTop = cleanedTop;
+        
+        localStorage.setItem('global_top', JSON.stringify(globalTop));
+        
+        // Обновляем отображение топа, если он сейчас открыт
+        if (document.getElementById('topScreen').classList.contains('active')) {
+            let activeTab = document.getElementById('tabBalance').classList.contains('active') ? 'balance' : 'inventory';
+            renderTop(activeTab);
+        }
+    }
+    
+    function updateBalance() {
+        document.getElementById('balance').innerText = balance.toFixed(2);
+    }
+    
     function renderTop(type = 'balance') {
         let list = document.getElementById("topList");
+        if (!list) return;
+        
         list.innerHTML = "";
         
-        // Сортируем пользователей
-        let sorted = Object.entries(globalTop)
-            .map(([id, data]) => ({id, ...data}))
+        // Получаем актуальные данные из globalTop
+        let topData = JSON.parse(localStorage.getItem('global_top')) || {};
+        
+        // Преобразуем в массив и сортируем
+        let sorted = Object.entries(topData)
+            .map(([id, data]) => ({
+                id,
+                name: data.name || 'Игрок',
+                balance: data.balance || 0,
+                inventoryValue: data.inventoryValue || 0
+            }))
             .sort((a, b) => type === 'balance' ? b.balance - a.balance : b.inventoryValue - a.inventoryValue)
             .slice(0, 50);
         
@@ -619,12 +637,12 @@
             let value = type === 'balance' ? user.balance : user.inventoryValue;
             
             // Подсвечиваем текущего пользователя
-            let isCurrentUser = user.id === userId;
+            let isCurrentUser = String(user.id) === String(userId);
             
             div.innerHTML = `
-                <div>
+                <div style="display: flex; align-items: center;">
                     <span class="top-rank" style="${isCurrentUser ? 'background: #ffb347;' : ''}">${rank}</span>
-                    <span class="top-name" style="${isCurrentUser ? 'color: #ffd700; font-weight: bold;' : ''}">${user.name || 'Игрок'} ${isCurrentUser ? '(вы)' : ''}</span>
+                    <span class="top-name" style="${isCurrentUser ? 'color: #ffd700; font-weight: bold;' : ''}">${user.name || 'Игрок'} ${isCurrentUser ? '👑' : ''}</span>
                 </div>
                 <span class="top-value">⭐ ${value.toFixed(2)}</span>
             `;
@@ -676,6 +694,9 @@
             renderTop('balance');
         }
     }
+    
+    // Инициализация: сохраняем данные при загрузке
+    saveUserData();
     
     tg.MainButton.text = "Закрыть";
     tg.MainButton.onClick(() => tg.close());
