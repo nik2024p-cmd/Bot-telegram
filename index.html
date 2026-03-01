@@ -10,51 +10,34 @@ body{
 margin:0;
 background:#0a0a0f;
 color:#fff;
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 text-align:center;
-background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-min-height: 100vh;
+background:linear-gradient(135deg,#0a0a0f 0%,#1a1a2e 100%);
+min-height:100vh;
 }
-
 h1{
 margin:15px 0;
-background: linear-gradient(45deg, #ffd700, #ffb347);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-font-size: 28px;
-text-shadow: 0 0 20px rgba(255,215,0,0.3);
+background:linear-gradient(45deg,#ffd700,#ffb347);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+font-size:28px;
 }
-
 .balance{
 font-size:20px;
 margin-bottom:10px;
-color: #ffd700;
-font-weight: bold;
-text-shadow: 0 0 10px rgba(255,215,0,0.5);
+color:#ffd700;
+font-weight:bold;
 }
-
-.screen{
-display:none;
-padding-bottom:90px;
-}
+.screen{display:none;padding-bottom:90px;}
 .active{display:block;}
 
 .click-wrap{margin-top:80px;display:flex;justify-content:center;}
 .click-btn{
 width:150px;height:150px;border-radius:50%;
 border:none;
-background: linear-gradient(145deg, #444, #222);
+background:linear-gradient(145deg,#444,#222);
 font-size:50px;color:#fff;
-box-shadow: 0 10px 30px rgba(255,215,0,0.3), 0 0 20px #ffd700;
-cursor: pointer;
-transition: all 0.2s ease;
-}
-.click-btn:hover {
-transform: scale(1.05);
-box-shadow: 0 15px 40px rgba(255,215,0,0.5), 0 0 30px #ffd700;
-}
-.click-btn:active {
-transform: scale(0.95);
+cursor:pointer;
 }
 
 .cases{
@@ -64,28 +47,16 @@ gap:10px;
 padding:15px;
 }
 .case{
-background: rgba(20,20,30,0.8);
-backdrop-filter: blur(10px);
+background:rgba(20,20,30,0.8);
 padding:15px;border-radius:16px;
-border: 1px solid rgba(255,215,0,0.1);
-box-shadow: 0 8px 20px rgba(0,0,0,0.5);
 }
-.case b {
-color: #ffd700;
-font-size: 16px;
-}
+.case b{color:#ffd700;}
 .case button{
 margin-top:10px;padding:10px;width:100%;
 border:none;border-radius:8px;
-background: linear-gradient(90deg, #ffd700, #ffb347);
-color: #000;
-font-weight: bold;
-cursor: pointer;
-transition: all 0.2s;
-}
-.case button:hover {
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+background:linear-gradient(90deg,#ffd700,#ffb347);
+color:#000;font-weight:bold;
+cursor:pointer;
 }
 
 .inventory-grid{
@@ -94,18 +65,28 @@ grid-template-columns:1fr 1fr;
 gap:10px;
 padding:15px;
 }
-
 .inventory-slot{
-background: rgba(20,20,30,0.8);
-backdrop-filter: blur(10px);
-height:80px;
+background:rgba(20,20,30,0.8);
+padding:10px;
 border-radius:12px;
 display:flex;
-justify-content:center;
+flex-direction:column;
 align-items:center;
-font-size:28px;
-border: 1px solid rgba(255,215,0,0.1);
-box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+font-size:22px;
+}
+.inventory-slot img{
+width:60px;border-radius:8px;margin-bottom:6px;
+}
+.sell-btn{
+margin-top:6px;
+padding:6px 10px;
+font-size:12px;
+border:none;
+border-radius:8px;
+background:linear-gradient(90deg,#ffd700,#ffb347);
+color:#000;
+font-weight:bold;
+cursor:pointer;
 }
 
 .modal-bg{
@@ -118,157 +99,64 @@ justify-content:center;
 align-items:center;
 z-index:10;
 }
-
 .modal{
-background: #1a1a2e;
+background:#1a1a2e;
 padding:20px;
 border-radius:24px;
 width:90%;
 max-width:400px;
-border: 1px solid rgba(255,215,0,0.2);
-box-shadow: 0 20px 40px rgba(0,0,0,0.6);
 }
-
-.pointer{
-font-size:25px;
-margin:10px 0; 
-color: #ffd700;
-position: relative;
-z-index: 2;
-text-shadow: 0 0 10px #ffd700;
-}
-
+.pointer{font-size:25px;margin:10px 0;color:#ffd700;}
 .roulette{
 overflow:hidden;
 border:2px solid rgba(255,215,0,0.2);
 border-radius:12px;
-margin:15px 0; 
-background: #0a0a0f;
-position: relative;
+margin:15px 0;
+background:#0a0a0f;
+position:relative;
 }
-
-.roulette::before {
-content: '';
-position: absolute;
-top: 0;
-bottom: 0;
-left: 50%;
-width: 4px;
-background: linear-gradient(180deg, #ffd700, #ffb347);
-transform: translateX(-50%);
-z-index: 2;
-box-shadow: 0 0 10px #ffd700;
+.roulette::before{
+content:'';
+position:absolute;
+top:0;bottom:0;
+left:50%;
+width:4px;
+background:linear-gradient(180deg,#ffd700,#ffb347);
+transform:translateX(-50%);
 }
-
-.roulette-track{
-display:flex;
-will-change: transform;
-}
-
+.roulette-track{display:flex;}
 .roulette-item{
 min-width:90px;
 font-size:26px;
 padding:15px;
-border-right:1px solid rgba(255,215,0,0.1);
-text-align: center;
+text-align:center;
 }
+.roulette-item img{width:60px;border-radius:8px;}
 
-/* === КРАСИВОЕ МЕНЮ === */
 .nav{
 position:fixed;
 bottom:20px;
 left:50%;
-transform: translateX(-50%);
-width: auto;
+transform:translateX(-50%);
 display:flex;
-gap: 8px;
-background: rgba(20,20,30,0.8);
-backdrop-filter: blur(10px);
-padding: 8px;
-border-radius: 40px;
-border: 1px solid rgba(255,215,0,0.2);
-box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.2);
-z-index: 100;
+gap:8px;
+background:rgba(20,20,30,0.8);
+padding:8px;
+border-radius:40px;
 }
-
 .nav button{
-padding: 12px 24px;
-border: none;
-background: transparent;
-color: #aaa;
-font-size: 14px;
-font-weight: 500;
-border-radius: 30px;
-cursor: pointer;
-transition: all 0.3s ease;
-letter-spacing: 0.5px;
-white-space: nowrap;
+padding:12px 24px;
+border:none;
+background:transparent;
+color:#aaa;
+border-radius:30px;
+cursor:pointer;
 }
-
-.nav button:hover{
-color: #ffd700;
-background: rgba(255,215,0,0.1);
-}
-
 .nav button.active{
-background: linear-gradient(90deg, #ffd700, #ffb347);
-color: #000;
-font-weight: bold;
-box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+background:linear-gradient(90deg,#ffd700,#ffb347);
+color:#000;font-weight:bold;
 }
-
-/* Адаптация для мобильных */
-@media (max-width: 480px) {
-.nav {
-gap: 4px;
-padding: 6px;
-}
-.nav button {
-padding: 10px 16px;
-font-size: 13px;
-}
-}
-
-input{
-background:#222;
-color:#fff;
-border: 1px solid #444;
-padding: 12px;
-border-radius: 12px;
-width: 100%;
-box-sizing: border-box;
-}
-
-button {
-cursor: pointer;
-border: none;
-border-radius: 12px;
-padding: 12px 20px;
-font-weight: 500;
-transition: all 0.2s;
-}
-
-#closeBtn, #promoBg button {
-background: linear-gradient(90deg, #ffd700, #ffb347);
-color: #000;
-font-weight: bold;
-}
-
-#closeBtn:hover, #promoBg button:hover {
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(255,215,0,0.4);
-}
-
-#promoResult {
-color: #ffd700;
-}
-
-#resultText {
-font-size: 18px;
-margin: 15px 0;
-color: #ffd700;
-font-weight: bold;
-}
+#resultText{color:#ffd700;font-weight:bold;}
 </style>
 </head>
 <body>
@@ -290,7 +178,6 @@ font-weight: bold;
 <div id="inventoryList"></div>
 </div>
 
-<!-- Кейсовая рулетка -->
 <div class="modal-bg" id="modalBg">
 <div class="modal">
 <h2 id="caseTitle"></h2>
@@ -304,12 +191,10 @@ font-weight: bold;
 </div>
 </div>
 
-<!-- Промокоды -->
 <div class="modal-bg" id="promoBg">
 <div class="modal">
 <h2>Промокод</h2>
-<input id="promoInput" placeholder="Введите код"
-style="width:100%;padding:10px;border-radius:8px;border:none;margin-top:10px;">
+<input id="promoInput" placeholder="Введите код" style="width:100%;padding:10px;border-radius:8px;border:none;margin-top:10px;">
 <br><br>
 <button onclick="activatePromo()">Активировать</button>
 <br><br>
@@ -318,7 +203,6 @@ style="width:100%;padding:10px;border-radius:8px;border:none;margin-top:10px;">
 </div>
 </div>
 
-<!-- КРАСИВОЕ МЕНЮ -->
 <div class="nav">
 <button onclick="showScreen('click')" id="btnClick" class="active">⭐ Игра</button>
 <button onclick="showScreen('cases')" id="btnCases">📦 Кейсы</button>
@@ -327,294 +211,263 @@ style="width:100%;padding:10px;border-radius:8px;border:none;margin-top:10px;">
 </div>
 
 <script>
-
-/* ===== ДАННЫЕ ===== */
-
 let balance = parseFloat(localStorage.getItem("balance")) || 0;
 let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
 let freeCaseCooldown = parseInt(localStorage.getItem("freeCaseCooldown")) || 0;
 let promoUsed = JSON.parse(localStorage.getItem("promoUsed")) || {};
 let spinning = false;
 
-function saveGame(){
-localStorage.setItem("balance", balance);
-localStorage.setItem("inventory", JSON.stringify(inventory));
-localStorage.setItem("freeCaseCooldown", freeCaseCooldown);
-localStorage.setItem("promoUsed", JSON.stringify(promoUsed));
+function saveGame() {
+    localStorage.setItem("balance", balance);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+    localStorage.setItem("freeCaseCooldown", freeCaseCooldown);
+    localStorage.setItem("promoUsed", JSON.stringify(promoUsed));
 }
-
-function updateBalance(){
-document.getElementById("balance").innerText = balance.toFixed(2);
+function updateBalance() {
+    document.getElementById("balance").innerText = balance.toFixed(2);
 }
-
 updateBalance();
 
-/* ===== ЛУТ ===== */
-
+/* ПРЕДМЕТЫ */
 const items = {
-star1:{icon:"⭐1",value:1,weight:60},
-star2:{icon:"⭐2",value:2,weight:55},
-star3:{icon:"⭐3",value:3,weight:50},
-star4:{icon:"⭐4",value:4,weight:45},
-star5:{icon:"⭐5",value:5,weight:40},
-star6:{icon:"⭐6",value:6,weight:35},
-star7:{icon:"⭐7",value:7,weight:30},
-star8:{icon:"⭐8",value:8,weight:25},
-star9:{icon:"⭐9",value:9,weight:20},
-star10:{icon:"⭐10",value:10,weight:15},
-champagne:{icon:"🍾",value:50,weight:12},
-heart:{icon:"💝",value:15,weight:25},
-cake:{icon:"🎂",value:50,weight:12},
-trophy:{icon:"🏆",value:100,weight:8},
-gift:{icon:"🎁",value:25,weight:20},
-rose:{icon:"🌹",value:25,weight:20}
+    star1: { icon: "⭐1", value: 1 },
+    star2: { icon: "⭐2", value: 2 },
+    star3: { icon: "⭐3", value: 3 },
+    star4: { icon: "⭐4", value: 4 },
+    star5: { icon: "⭐5", value: 5 },
+    star6: { icon: "⭐6", value: 6 },
+    star7: { icon: "⭐7", value: 7 },
+    star8: { icon: "⭐8", value: 8 },
+    star9: { icon: "⭐9", value: 9 },
+    star10: { icon: "⭐10", value: 10 },
+    champagne: { icon: "🍾", value: 50 },
+    cake: { icon: "🎂", value: 50 },
+    trophy: { icon: "🏆", value: 100 },
+    heart: { icon: "💝", value: 15 },
+    gift: { icon: "🎁", value: 25 },
+    rose: { icon: "🌹", value: 25 },
+    star50: { icon: "⭐50", value: 50 },
+    nft_doshirak: {
+        icon: "🍜",
+        img: "https://i.postimg.cc/Kv9nkPNQ/20260227-203433.png",
+        value: 500
+    }
 };
 
-const allItems = Object.keys(items);
+const starItems = ["star1", "star2", "star3", "star4", "star5", "star6", "star7", "star8", "star9", "star10"];
+const giftItems = ["champagne", "cake", "trophy", "heart", "gift", "rose"];
 
-/* ===== КЕЙСЫ ===== */
-
+/* КЕЙСЫ */
 const cases = {
-free:{name:"Бесплатный",price:0},
-case1:{name:"Кейс #1",price:10},
-case2:{name:"Кейс #2",price:25},
-case3:{name:"Кейс #3",price:50},
-case4:{name:"Кейс #4",price:75},
-case5:{name:"Кейс #5",price:100}
+    free: { name: "Бесплатный", price: 0 },
+    case1: { name: "Кейс #1", price: 10 },
+    case2: { name: "Кейс #2", price: 25 },
+    case3: { name: "Кейс #3", price: 50 },
+    case4: { name: "Кейс #4", price: 75 },
+    case5: { name: "Кейс #5", price: 100 },
+    case6: { name: "Кейс нфт", price: 100 }
 };
 
-/* ===== ПРОМОКОДЫ ===== */
+/* КЛИК */
+function tap() {
+    balance += 0.05;
+    balance = Math.round(balance * 100) / 100;
+    updateBalance();
+    saveGame();
+}
 
+/* Функция получения случайного предмета для кейса */
+function getRandomItemForKey(key) {
+    if (key === "case6") {
+        return Math.random() < 0.9 ? "star50" : "nft_doshirak";
+    } else {
+        if (Math.random() < 0.5) {
+            return giftItems[Math.floor(Math.random() * giftItems.length)];
+        } else {
+            return starItems[Math.floor(Math.random() * starItems.length)];
+        }
+    }
+}
+
+/* ОТКРЫТИЕ */
+function openCase(key) {
+    let c = cases[key];
+    if (key === "free") {
+        if (Date.now() < freeCaseCooldown) {
+            let left = Math.ceil((freeCaseCooldown - Date.now()) / 60000);
+            return alert("Бесплатный кейс через " + left + " мин");
+        }
+        freeCaseCooldown = Date.now() + 600000;
+    }
+    if (balance < c.price && key !== "free") return alert("Недостаточно звёзд");
+    if (key !== "free") { balance -= c.price; updateBalance(); }
+    saveGame();
+    openModal(key, c.name);
+}
+
+/* РУЛЕТКА */
+function openModal(key, title) {
+    spinning = true;
+    document.getElementById("modalBg").style.display = "flex";
+    document.getElementById("caseTitle").innerText = title;
+    document.getElementById("closeBtn").style.display = "none";
+    document.getElementById("resultText").innerText = "";
+
+    let track = document.getElementById("rouletteTrack");
+    track.innerHTML = "";
+    track.style.transition = "none";
+    track.style.transform = "translateX(0px)";
+
+    let finalItem = getRandomItemForKey(key);
+
+    let arr = [];
+    for (let i = 0; i < 60; i++) {
+        if (i === 30) {
+            arr.push(finalItem);
+        } else {
+            if (key === "case6") {
+                arr.push(Math.random() < 0.9 ? "star50" : "nft_doshirak");
+            } else {
+                arr.push(Math.random() < 0.5
+                    ? giftItems[Math.floor(Math.random() * giftItems.length)]
+                    : starItems[Math.floor(Math.random() * starItems.length)]
+                );
+            }
+        }
+    }
+
+    arr.forEach(item => {
+        let div = document.createElement("div");
+        div.className = "roulette-item";
+        if (items[item].img) {
+            div.innerHTML = "<img src='" + items[item].img + "'>";
+        } else {
+            div.innerText = items[item].icon;
+        }
+        track.appendChild(div);
+    });
+
+    setTimeout(() => {
+        track.style.transition = "transform 4s cubic-bezier(0.25,0.1,0.15,1)";
+        track.style.transform = "translateX(-2700px)";
+    }, 100);
+
+    setTimeout(() => {
+        inventory.push(finalItem);
+        saveGame();
+        document.getElementById("resultText").innerHTML = "🎉 Выпало: " + items[finalItem].icon + " 🎉";
+        document.getElementById("closeBtn").style.display = "block";
+        spinning = false;
+    }, 4500);
+}
+
+function closeModal() {
+    if (spinning) return;
+    document.getElementById("modalBg").style.display = "none";
+}
+
+/* ИНВЕНТАРЬ */
+function renderInventory() {
+    let list = document.getElementById("inventoryList");
+    list.innerHTML = "";
+    let grid = document.createElement("div");
+    grid.className = "inventory-grid";
+
+    inventory.forEach((item, index) => {
+        let div = document.createElement("div");
+        div.className = "inventory-slot";
+
+        if (items[item].img) {
+            div.innerHTML = "<img src='" + items[item].img + "'><div>Доширак NFT</div>";
+        } else {
+            div.innerHTML = "<div>" + items[item].icon + "</div>";
+        }
+
+        let sell = document.createElement("button");
+        sell.className = "sell-btn";
+        sell.innerText = "Продать";
+        sell.onclick = function () {
+            balance += items[item].value;
+            inventory.splice(index, 1);
+            updateBalance();
+            saveGame();
+            renderInventory();
+        };
+        div.appendChild(sell);
+        grid.appendChild(div);
+    });
+    list.appendChild(grid);
+}
+
+/* ПРОМО */
 const PROMOCODES = {
-ПРОМОКОД:{reward:25,uses:25},
+    ПРОМОКОД: { reward: 25, uses: 25 },
+    START: { reward: 25, uses: 50 },
 };
 
-/* ===== КЛИКЕР ===== */
-
-function tap(){
-balance+=0.05;
-balance=Math.round(balance*100)/100;
-updateBalance();
-saveGame();
+function openPromo() {
+    document.getElementById("promoBg").style.display = "flex";
+    document.getElementById("promoResult").innerText = "";
+}
+function closePromo() {
+    document.getElementById("promoBg").style.display = "none";
+}
+function activatePromo() {
+    let code = document.getElementById("promoInput").value.trim().toUpperCase();
+    let result = document.getElementById("promoResult");
+    if (!PROMOCODES[code]) return result.innerText = "❌ Промокод не найден";
+    if (promoUsed[code]) return result.innerText = "❌ Уже использован";
+    if (PROMOCODES[code].uses <= 0) return result.innerText = "❌ Лимит исчерпан";
+    balance += PROMOCODES[code].reward;
+    PROMOCODES[code].uses--;
+    promoUsed[code] = true;
+    updateBalance();
+    saveGame();
+    result.innerText = "✅ Получено " + PROMOCODES[code].reward + "⭐";
 }
 
-/* ===== НАВИГАЦИЯ ===== */
-
-function showScreen(name){
-document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
-document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-
-if(name==="click"){clickScreen.classList.add("active");btnClick.classList.add("active");}
-if(name==="cases"){caseScreen.classList.add("active");btnCases.classList.add("active");}
-if(name==="inventory"){inventoryScreen.classList.add("active");btnInv.classList.add("active");renderInventory();}
-}
-
-/* ===== РУЛЕТКА (ИСПРАВЛЕННАЯ) ===== */
-
-function weightedRandom(){
-let total=0;
-allItems.forEach(i=>total+=items[i].weight);
-let rand=Math.random()*total;
-let sum=0;
-for(let i of allItems){
-sum+=items[i].weight;
-if(rand<=sum) return i;
-}
-}
-
-function openCase(key){
-let c=cases[key];
-
-if(key==="free"){
-if(Date.now()<freeCaseCooldown){
-let left=Math.ceil((freeCaseCooldown-Date.now())/60000);
-return alert("Бесплатный кейс через "+left+" мин");
-}
-freeCaseCooldown=Date.now()+600000;
-}
-
-if(balance<c.price && key!=="free") return alert("Недостаточно звёзд");
-
-if(key!=="free"){balance-=c.price;updateBalance();}
-
-saveGame();
-openModal(c.name);
-}
-
-function openModal(title){
-spinning=true;
-document.getElementById("modalBg").style.display="flex";
-document.getElementById("caseTitle").innerText=title;
-document.getElementById("closeBtn").style.display="none";
-document.getElementById("resultText").innerText="";
-
-let track=document.getElementById("rouletteTrack");
-track.innerHTML="";
-track.style.transition="none";
-track.style.transform="translateX(0px)";
-
-// Генерируем 60 предметов для прокрутки
-let arr=[];
-for(let i=0;i<60;i++){
-arr.push(weightedRandom());
-}
-
-// Выбираем выигрышный предмет (индекс 30 - чтобы был по центру после прокрутки)
-let winIndex = 30;
-let finalItem = arr[winIndex];
-
-// Создаем элементы прокрутки
-arr.forEach((item, index) => {
-let div=document.createElement("div");
-div.className="roulette-item";
-div.innerText=items[item].icon;
-// Добавляем data атрибут для отслеживания
-div.dataset.index = index;
-div.dataset.item = item;
-track.appendChild(div);
-});
-
-// Даем время для отрисовки
-setTimeout(() => {
-// Получаем позицию указателя (центр контейнера)
-let roulette = document.querySelector('.roulette');
-let containerCenter = roulette.offsetWidth / 2;
+/* РЕНДЕР КЕЙСОВ - ИСПРАВЛЕННАЯ ВЕРСИЯ */
+function renderCases() {
+    let list = document.getElementById("caseList");
+    list.innerHTML = "";
     
-// Получаем позицию выигрышного элемента
-let winElement = track.children[winIndex];
-let elementPosition = winElement.offsetLeft;
+    const caseKeys = ["free", "case1", "case2", "case3", "case4", "case5", "case6"];
     
-// Рассчитываем смещение так, чтобы элемент оказался в центре
-let targetOffset = elementPosition - containerCenter + (winElement.offsetWidth / 2);
-    
-// Применяем анимацию
-track.style.transition = "transform 4s cubic-bezier(0.25, 0.1, 0.15, 1)";
-track.style.transform = "translateX(-" + targetOffset + "px)";
-    
-// Сохраняем финальный предмет для проверки
-track.dataset.finalItem = finalItem;
-}, 100);
-
-setTimeout(()=>{
-// Проверяем, какой предмет действительно в центре
-let roulette = document.querySelector('.roulette');
-let containerCenter = roulette.offsetWidth / 2;
-let trackRect = track.getBoundingClientRect();
-let rouletteRect = roulette.getBoundingClientRect();
-    
-// Находим элемент, который находится в центре
-let centerX = rouletteRect.left + containerCenter;
-let centerElement = null;
-let centerElementIndex = -1;
-    
-Array.from(track.children).forEach((child, index) => {
-let childRect = child.getBoundingClientRect();
-if (childRect.left <= centerX && childRect.right >= centerX) {
-centerElement = child;
-centerElementIndex = index;
-}
-});
-    
-// Определяем выигрышный предмет
-let winningItem;
-if (centerElement && centerElement.dataset.item) {
-winningItem = centerElement.dataset.item;
-} else {
-// Если не нашли (ошибка), используем запланированный
-winningItem = finalItem;
-}
-    
-// Добавляем в инвентарь
-inventory.push(winningItem);
-saveGame();
-    
-// Показываем результат
-document.getElementById("resultText").innerHTML = "🎉 Выпало: " + items[winningItem].icon + " 🎉";
-document.getElementById("closeBtn").style.display="block";
-spinning=false;
-}, 4500);
+    for (let key of caseKeys) {
+        let c = cases[key];
+        let div = document.createElement("div");
+        div.className = "case";
+        div.innerHTML = "<b>" + c.name + "</b><br>" + 
+                       "<small>Цена: " + c.price + " ⭐</small><br>" +
+                       "<button onclick='openCase(\"" + key + "\")'>Открыть</button>";
+        list.appendChild(div);
+    }
 }
 
-function closeModal(){
-if(spinning) return;
-document.getElementById("modalBg").style.display="none";
-}
-
-/* ===== ИНВЕНТАРЬ ===== */
-
-function renderInventory(){
-let list=document.getElementById("inventoryList");
-list.innerHTML="";
-let grid=document.createElement("div");
-grid.className="inventory-grid";
-inventory.forEach(item=>{
-let div=document.createElement("div");
-div.className="inventory-slot";
-div.innerText=items[item].icon;
-grid.appendChild(div);
-});
-list.appendChild(grid);
-}
-
-/* ===== ПРОМОКОДЫ ===== */
-
-function openPromo(){
-document.getElementById("promoBg").style.display="flex";
-document.getElementById("promoResult").innerText="";
-}
-
-function closePromo(){
-document.getElementById("promoBg").style.display="none";
-}
-
-function activatePromo(){
-let code=document.getElementById("promoInput").value.trim().toUpperCase();
-let result=document.getElementById("promoResult");
-
-if(!PROMOCODES[code]){
-result.innerText="❌ Промокод не найден";
-return;
-}
-
-if(promoUsed[code]){
-result.innerText="❌ Уже использован";
-return;
-}
-
-if(PROMOCODES[code].uses<=0){
-result.innerText="❌ Лимит активаций исчерпан";
-return;
-}
-
-balance+=PROMOCODES[code].reward;
-PROMOCODES[code].uses--;
-promoUsed[code]=true;
-
-updateBalance();
-saveGame();
-
-result.innerText="✅ Получено "+PROMOCODES[code].reward+"⭐";
-}
-
-/* ===== РЕНДЕР КЕЙСОВ ===== */
-
-function renderCases(){
-let list=document.getElementById("caseList");
-list.innerHTML="";
-for(let key in cases){
-let c=cases[key];
-let div=document.createElement("div");
-div.className="case";
-div.innerHTML="<b>"+c.name+"</b><br><button onclick='openCase(\""+key+"\")'>Открыть</button>";
-list.appendChild(div);
-}
-}
+/* ИНИЦИАЛИЗАЦИЯ */
 renderCases();
 
-window.onbeforeunload=function(){
-if(spinning) return "Подождите окончания прокрутки!";
+function showScreen(name) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+    
+    if (name === "click") {
+        document.getElementById("clickScreen").classList.add("active");
+        document.getElementById("btnClick").classList.add("active");
+    }
+    if (name === "cases") {
+        document.getElementById("caseScreen").classList.add("active");
+        document.getElementById("btnCases").classList.add("active");
+    }
+    if (name === "inventory") {
+        document.getElementById("inventoryScreen").classList.add("active");
+        document.getElementById("btnInv").classList.add("active");
+        renderInventory();
+    }
 }
 
+// Обновляем баланс при загрузке
+updateBalance();
 </script>
 </body>
 </html>
